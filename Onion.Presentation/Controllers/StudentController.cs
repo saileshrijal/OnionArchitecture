@@ -23,26 +23,14 @@ namespace Onion.Presentation.Controllers
             try
             {
                 var studentsDto = await _studentService.GetAllStudentsAsync();
-                var studentsVM = studentsDto.Select(x => new StudentVM()
+
+                return Ok(studentsDto.Select(x => new
                 {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Email = x.Email,
-                    Phone = x.Phone,
-                    FacultyId = x.FacultyId,
-                    Faculty = new FacultyVM()
-                    {
-                        Id = x.Faculty!.Id,
-                        Name = x.Faculty.Name,
-                    }
-                });
-                return Ok(studentsVM.Select(x => new
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Email = x.Email,
-                    Phone = x.Phone,
-                    Faculty = x.Faculty,
+                    x.Id,
+                    x.Name,
+                    x.Email,
+                    x.Phone,
+                    x.Faculty
                 }));
             }
             catch (Exception ex)
@@ -57,20 +45,15 @@ namespace Onion.Presentation.Controllers
             try
             {
                 var studentDto = await _studentService.GetStudentByIdAsync(id);
-                var studentVM = new StudentVM()
+
+                return Ok(new
                 {
-                    Id = studentDto.Id,
-                    Name = studentDto.Name,
-                    Email = studentDto.Email,
-                    Phone = studentDto.Phone,
-                    FacultyId = studentDto.FacultyId,
-                    Faculty = new FacultyVM()
-                    {
-                        Id = studentDto.Faculty!.Id,
-                        Name = studentDto.Faculty.Name,
-                    }
-                };
-                return Ok(studentVM);
+                    studentDto.Id,
+                    studentDto.Name,
+                    studentDto.Email,
+                    studentDto.Phone,
+                    studentDto.Faculty
+                });
             }
             catch (Exception ex)
             {
