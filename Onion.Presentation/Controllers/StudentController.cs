@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Onion.Application.Dtos;
 using Onion.Application.Services.Interface;
+using Onion.Infrastructures.Repository.Interface;
 using Onion.Presentation.ViewModels;
 
 namespace Onion.Presentation.Controllers
@@ -11,10 +12,12 @@ namespace Onion.Presentation.Controllers
     public class StudentController : ControllerBase
     {
         private readonly IStudentService _studentService;
+        private readonly IStudentRepository _studentRepository;
 
-        public StudentController(IStudentService studentService)
+        public StudentController(IStudentService studentService, IStudentRepository studentRepository)
         {
             _studentService = studentService;
+            _studentRepository = studentRepository;
         }
 
         [HttpGet]
@@ -22,16 +25,16 @@ namespace Onion.Presentation.Controllers
         {
             try
             {
-                var studentsDto = await _studentService.GetAllStudentsAsync();
-
-                return Ok(studentsDto.Select(x => new
+                var student = await _studentRepository.GetAll();
+                var result = student.Select(x => new
                 {
                     x.Id,
                     x.Name,
-                    x.Email,
                     x.Phone,
-                    x.Faculty
-                }));
+                    x.Email,
+                    x.FacultyId
+                });
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -44,16 +47,16 @@ namespace Onion.Presentation.Controllers
         {
             try
             {
-                var studentDto = await _studentService.GetStudentByIdAsync(id);
-
-                return Ok(new
+                var student = await _studentRepository.GetById(id);
+                var result = new
                 {
-                    studentDto.Id,
-                    studentDto.Name,
-                    studentDto.Email,
-                    studentDto.Phone,
-                    studentDto.Faculty
-                });
+                    student.Id,
+                    student.Name,
+                    student.Phone,
+                    student.Email,
+                    student.FacultyId
+                };
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -66,13 +69,17 @@ namespace Onion.Presentation.Controllers
         {
             try
             {
-                var studentDto = new StudentDto() 
-                { 
+                if (!ModelState.IsValid) { return BadRequest(ModelState); }
+
+                var studentDto = new StudentDto()
+                {
+                    Id = studentVM.Id,
                     Name = studentVM.Name,
-                    Email = studentVM.Email,
                     Phone = studentVM.Phone,
+                    Email = studentVM.Email,
                     FacultyId = studentVM.FacultyId
                 };
+
                 await _studentService.CreateStudentAsync(studentDto);
                 return Ok();
             }
@@ -87,14 +94,16 @@ namespace Onion.Presentation.Controllers
         {
             try
             {
-                var stduentDto = new StudentDto()
+                if (!ModelState.IsValid) { return BadRequest(ModelState); }
+                var studentDto = new StudentDto()
                 {
+                    Id = studentVM.Id,
                     Name = studentVM.Name,
-                    Email = studentVM.Email,
                     Phone = studentVM.Phone,
+                    Email = studentVM.Email,
                     FacultyId = studentVM.FacultyId
                 };
-                await _studentService.UpdateStudentAsync(id, stduentDto);
+                await _studentService.UpdateStudentAsync(id, studentDto);
                 return Ok();
             }
             catch (Exception ex)

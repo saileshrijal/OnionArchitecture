@@ -9,8 +9,6 @@ namespace Onion.Application.Services.Interface
 {
     public interface IStudentService
     {
-        Task<IEnumerable<StudentDto>> GetAllStudentsAsync();
-        Task<StudentDto> GetStudentByIdAsync(int id);
         Task CreateStudentAsync(StudentDto studentDto);
         Task UpdateStudentAsync(int id, StudentDto studentDto);
         Task DeleteStudentAsync(int id);

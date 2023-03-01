@@ -10,19 +10,50 @@ namespace Onion.Infrastructures.UnitOfWork.Interface
     public class UnitOfWork: IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        public IFacultyRepository Faculty { get; private set; }
-        public IStudentRepository Student { get; private set; }
 
-        public UnitOfWork(ApplicationDbContext context) 
+        public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
-            Faculty = new FacultyRepository(context);
-            Student = new StudentRepository(context);
         }
 
-        public async Task<int> SaveAsync()
+        public void Save()
         {
-            return await _context.SaveChangesAsync();   
+            _context.SaveChanges();
+        }
+
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task CreateAsync<T>(T entity)
+        {
+            await _context.AddAsync(entity!);
+        }
+
+        public async Task CreateRangeAsync<T>(IEnumerable<T> entities) where T : class
+        {
+            await _context.AddRangeAsync(entities);
+        }
+
+        public void Remove<T>(T entity)
+        {
+            _context.Remove(entity!);
+        }
+
+        public void RemoveRange<T>(IEnumerable<T> entities) where T : class
+        {
+            _context.RemoveRange(entities);
+        }
+
+        public void Update<T>(T entity)
+        {
+            _context.Update(entity!);
+        }
+
+        public void UpdateRange<T>(IEnumerable<T> entities) where T : class
+        {
+            _context.UpdateRange(entities);
         }
     }
 }

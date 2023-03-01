@@ -10,12 +10,8 @@ namespace Onion.Infrastructures.Repository.Interface
     public interface IRepository<T> where T : class
     {
         Task<IEnumerable<T>> GetAll();
-        Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate);
-        Task AddRange(IEnumerable<T> entities);
-        Task Insert(T entity);
+        Task<IEnumerable<T>> GetAllBy(Expression<Func<T, bool>> predicate);
+        Task<T> GetBy(Expression<Func<T, bool>> predicate);
         Task<T> GetById(int Id);
-        void Update(T entity);
-        void Remove(T entity);
-        void RemoveRange(IEnumerable<T> entities);
     }
 }

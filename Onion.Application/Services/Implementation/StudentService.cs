@@ -2,6 +2,7 @@
 using Onion.Application.Dtos;
 using Onion.Application.Services.Interface;
 using Onion.Domain.Models;
+using Onion.Infrastructures.Repository.Interface;
 using Onion.Infrastructures.UnitOfWork.Interface;
 
 namespace Onion.Application.Services.Implementation
@@ -9,10 +10,12 @@ namespace Onion.Application.Services.Implementation
     public class StudentService : IStudentService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IStudentRepository _studentRepository;
 
-        public StudentService(IUnitOfWork unitOfWork)
+        public StudentService(IUnitOfWork unitOfWork, IStudentRepository studentRepository)
         {
             _unitOfWork = unitOfWork;
+            _studentRepository = studentRepository;
         }
 
         public async Task CreateStudentAsync(StudentDto studentDto)
@@ -21,72 +24,30 @@ namespace Onion.Application.Services.Implementation
             {
                 Name = studentDto.Name,
                 Email = studentDto.Email,
-                FacultyId = studentDto.FacultyId,
                 Phone = studentDto.Phone,
+                FacultyId= studentDto.FacultyId,
             };
-            await _unitOfWork.Student.Insert(student);
+            await _unitOfWork.CreateAsync(student);
             await _unitOfWork.SaveAsync();
         }
 
         public async Task DeleteStudentAsync(int id)
         {
-            var student = await _unitOfWork.Student.GetById(id);
-            if (student == null)
-            {
-                throw new Exception("Student doesnot found");
-            }
-            _unitOfWork.Student.Remove(student);
-            await _unitOfWork.SaveAsync();
-        }
-
-        public async Task<IEnumerable<StudentDto>> GetAllStudentsAsync()
-        {
-            var listOfStudents = await _unitOfWork.Student.GetAll();
-            return listOfStudents.Select(x => new StudentDto
-            {
-                Id = x.Id,  
-                Email = x.Email,
-                Phone = x.Phone,
-                Name = x.Name,
-                FacultyId = x.FacultyId,
-                Faculty = new FacultyDto()
-                {
-                    Id = x.Faculty!.Id,
-                    Name = x.Faculty.Name,
-                }
-            });
-        }
-
-        public async Task<StudentDto> GetStudentByIdAsync(int id)
-        {
-            var student = await _unitOfWork.Student.GetById(id);
-            return new StudentDto
-            {
-                Id = student.Id,
-                Email = student.Email,
-                Phone = student.Phone,
-                Name = student.Name,
-                FacultyId = student.FacultyId,
-                Faculty = new FacultyDto()
-                {
-                    Id = student.Faculty!.Id,
-                    Name = student.Faculty.Name,
-                }
-            };
+            var student = await _studentRepository.GetById(id);
+            if(student == null) { throw new Exception("Student not found"); }
+            _unitOfWork.Remove(student);
+            _unitOfWork.Save();
         }
 
         public async Task UpdateStudentAsync(int id, StudentDto studentDto)
         {
-            var student = await _unitOfWork.Student.GetById(id);
-            if (student == null)
-            {
-                throw new Exception("Student could not found");
-            }
+            var student = await _studentRepository.GetById(id);
+            if(student == null ) { throw new Exception("Student not found"); }
             student.Name = studentDto.Name;
             student.Email = studentDto.Email;
-            student.FacultyId = studentDto.FacultyId;
             student.Phone = studentDto.Phone;
-            await _unitOfWork.SaveAsync();
+            student.FacultyId= studentDto.FacultyId;
+            _unitOfWork.Save();
         }
     }
 }

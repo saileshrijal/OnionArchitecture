@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Onion.Application.Services.Implementation;
 using Onion.Application.Services.Interface;
 using Onion.Infrastructures;
+using Onion.Infrastructures.Repository.Interface;
 using Onion.Infrastructures.UnitOfWork.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IFacultyRepository, FacultyRepository>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFacultyService, FacultyService>();
 builder.Services.AddScoped<IStudentService, StudentService>();

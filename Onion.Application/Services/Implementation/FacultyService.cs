@@ -1,6 +1,7 @@
 ﻿using Onion.Application.Dtos;
 using Onion.Application.Services.Interface;
 using Onion.Domain.Models;
+using Onion.Infrastructures.Repository.Interface;
 using Onion.Infrastructures.UnitOfWork.Interface;
 using System;
 using System.Collections.Generic;
@@ -13,62 +14,38 @@ namespace Onion.Application.Services.Implementation
     public class FacultyService : IFacultyService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IFacultyRepository _facultyRepository;
 
-        public FacultyService(IUnitOfWork unitOfWork)
+        public FacultyService(IUnitOfWork unitOfWork, IFacultyRepository facultyRepository)
         {
             _unitOfWork = unitOfWork;
+            _facultyRepository = facultyRepository;
         }
 
         public async Task CreateFacultyAsync(FacultyDto facultyDto)
         {
             var faculty = new Faculty()
             {
-                Name = facultyDto.Name,
+                Name = facultyDto.Name
             };
-            await _unitOfWork.Faculty.Insert(faculty);
+            await _unitOfWork.CreateAsync(faculty);
             await _unitOfWork.SaveAsync();
         }
 
         public async Task DeleteFacultyAsync(int id)
         {
-            var faculty = await _unitOfWork.Faculty.GetById(id);
-            if(faculty== null)
-            {
-                throw new Exception("Faculty doesnot found");
-            }
-            _unitOfWork.Faculty.Remove(faculty);
-            await _unitOfWork.SaveAsync();
-        }
-
-        public async Task<IEnumerable<FacultyDto>> GetAllFacultiesAsync()
-        {
-            var listOfFaculties = await _unitOfWork.Faculty.GetAll();
-            return listOfFaculties.Select(x => new FacultyDto
-            {
-                Id = x.Id,
-                Name = x.Name,
-            });
-        }
-
-        public async Task<FacultyDto> GetFacultyByIdAsync(int id)
-        {
-            var faculty = await _unitOfWork.Faculty.GetById(id);
-            return new FacultyDto 
-            {
-                Id = faculty.Id,
-                Name = faculty.Name,
-            };
+            var faculty = await _facultyRepository.GetById(id);
+            if(faculty == null) { throw new Exception("Faculty not found"); }
+            _unitOfWork.Remove(faculty);
+            _unitOfWork.Save();
         }
 
         public async Task UpdateFacultyAsync(int id, FacultyDto facultyDto)
         {
-            var faculty = await _unitOfWork.Faculty.GetById(id);
-            if (faculty == null)
-            {
-                throw new Exception("Faculty could not found");
-            }
+            var faculty = await _facultyRepository.GetById(id);
+            if(faculty == null) { throw new Exception("Faculty not found"); }
             faculty.Name = facultyDto.Name;
-            await _unitOfWork.SaveAsync();
+            _unitOfWork.Save();
         }
     }
 }

@@ -9,8 +9,6 @@ namespace Onion.Application.Services.Interface
 {
     public interface IFacultyService
     {
-        Task<IEnumerable<FacultyDto>> GetAllFacultiesAsync();
-        Task<FacultyDto> GetFacultyByIdAsync(int id);
         Task CreateFacultyAsync(FacultyDto facultyDto);
         Task UpdateFacultyAsync(int id, FacultyDto facultyDto);
         Task DeleteFacultyAsync(int id);
