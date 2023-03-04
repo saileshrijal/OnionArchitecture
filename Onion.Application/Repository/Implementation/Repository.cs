@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Onion.Infrastructures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Onion.Infrastructures.Repository.Interface
+namespace Onion.Application.Repository.Interface
 {
     public class Repository<T> : IRepository<T> where T : class
     {

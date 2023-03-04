@@ -6,9 +6,9 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Onion.Infrastructures.Repository.Interface
+namespace Onion.Application.Repository.Interface
 {
-    public interface IStudentRepository : IRepository<Student>
+    public interface IFacultyRepository : IRepository<Faculty>
     {
     }
 }

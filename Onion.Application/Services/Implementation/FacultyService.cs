@@ -1,7 +1,7 @@
 ﻿using Onion.Application.Dtos;
+using Onion.Application.Repository.Interface;
 using Onion.Application.Services.Interface;
 using Onion.Domain.Models;
-using Onion.Infrastructures.Repository.Interface;
 using Onion.Infrastructures.UnitOfWork.Interface;
 using System;
 using System.Collections.Generic;

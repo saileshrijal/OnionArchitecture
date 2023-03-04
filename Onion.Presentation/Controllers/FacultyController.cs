@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Onion.Application.Dtos;
+using Onion.Application.Repository.Interface;
 using Onion.Application.Services.Interface;
-using Onion.Infrastructures.Repository.Interface;
 using Onion.Presentation.ViewModels;
 
 namespace Onion.Presentation.Controllers

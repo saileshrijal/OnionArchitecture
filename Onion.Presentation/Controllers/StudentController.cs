@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Onion.Application.Dtos;
+using Onion.Application.Repository.Interface;
 using Onion.Application.Services.Interface;
-using Onion.Infrastructures.Repository.Interface;
 using Onion.Presentation.ViewModels;
 
 namespace Onion.Presentation.Controllers
@@ -25,14 +25,14 @@ namespace Onion.Presentation.Controllers
         {
             try
             {
-                var student = await _studentRepository.GetAll();
-                var result = student.Select(x => new
+                var students = await _studentRepository.GetAllStudentsWithFaculty();
+                var result = students.Select(x => new
                 {
                     x.Id,
                     x.Name,
                     x.Phone,
                     x.Email,
-                    x.FacultyId
+                    x.Faculty
                 });
                 return Ok(result);
             }
@@ -47,14 +47,14 @@ namespace Onion.Presentation.Controllers
         {
             try
             {
-                var student = await _studentRepository.GetById(id);
+                var student = await _studentRepository.GetStudentWithFacultyById(id);
                 var result = new
                 {
                     student.Id,
                     student.Name,
                     student.Phone,
                     student.Email,
-                    student.FacultyId
+                    student.Faculty
                 };
                 return Ok(result);
             }

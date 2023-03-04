@@ -13,5 +13,6 @@ namespace Onion.Application.Dtos
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public int FacultyId { get; set; }
+        public FacultyDto? Faculty { get; set; }
     }
 }

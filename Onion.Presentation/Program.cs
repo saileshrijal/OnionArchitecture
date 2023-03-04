@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Onion.Application.Repository.Interface;
 using Onion.Application.Services.Implementation;
 using Onion.Application.Services.Interface;
 using Onion.Infrastructures;
-using Onion.Infrastructures.Repository.Interface;
 using Onion.Infrastructures.UnitOfWork.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
